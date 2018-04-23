@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Detail Page</title>
+  </head>
+
+  <body>
+  <h2>Details for employee with employee ID {{employeeid}}</h2>
+  {{#if empRecord}}
+    <li>Employeeid: {{ empRecord.employeeid }}</li>
+    <li>Name: {{ empRecord.name }}</li>
+    <li>Degree: {{ empRecord.degree }}</li>
+    <a href={{delURL}}>Delete This Record</a>
+  {{else}}
+    not found
+  {{/if}}
+  
+  <br />
+  <a href="http://localhost:3000">Home Page</a>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Home Page</title>
+  </head>
+
+  <body>
+    <form method="get" action="http://localhost:3000/detail">
+      <input type="text" placeholder="Search by employeeid (Integer only)" name="employeeid" size="35">
+      <button type="submit">Search</button>
+    </form>
+    
+    <br />
+    
+    <h2>List of employees</h2>
+      {{#each empList}}
+      <li>Employeeid: {{ employeeid }}</li>
+      <li>Name: {{ name }}</li>
+      <li>Degree: {{ degree }}</li>      
+      <a href={{viewURL}}>View Detail</a>
+      <br />
+      <br />
+      {{/each}}
+  </body>
+</html>

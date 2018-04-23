@@ -79,9 +79,14 @@ function remove(key, value) {
 	return false;
 }
 
+function getRecordCount() {
+	return employee.length;
+}
+
 module.exports = {
     add: add,
     getAll: getAll,
     get: get,
-    remove: remove
+    remove: remove,
+	getRecordCount : getRecordCount
 };
