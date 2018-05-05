@@ -1,12 +1,8 @@
 'use strict'
-var http = require("http"); 
-var fs = require("fs");
-const querystring = require('querystring');
-var manipulation = require("./manipulation");
-var currentPath = process.cwd();
+const manipulation = require("./manipulation");
 const express = require("express");
 const app = express();
-var key;
+let key;
 let handlebars =  require("express-handlebars");
 
 app.engine(".html", handlebars({extname: '.html'}));
@@ -20,7 +16,7 @@ app.get('/', (req, res) => {
 	res.type('text/html');
 	res.status(200);	
 	
-	for (var i = 0; i < empList.length; i++) {
+	for (let i = 0; i < empList.length; i++) {
 		empList[i].viewURL = "http://localhost:3000/detail?employeeid=" + empList[i].employeeid;
 	}
 	
@@ -36,7 +32,7 @@ app.get('/about', (req, res) => {
 app.get('/getall', (req, res) => {
 	res.type('text/plain');
 	res.status(200);
-	res.send(JSON.stringify(manipulation.getAll()));
+	res.send(JSON.stringify(manipulation.getAll())); 
 });
 
 app.get('/get', (req, res) => {	
@@ -45,13 +41,14 @@ app.get('/get', (req, res) => {
 	
 	res.type('text/html'); 
 	res.status(200);
-			    
+	
+	// need to update from viewURL to delURL after localhost:3000/ is called.
 	res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord });
 });
 
 app.get('/delete', (req, res) => {	
 	key = Object.keys(req.query)[0];	
-	var isRecordRemoved = manipulation.remove(key, req.query[key]);
+	let isRecordRemoved = manipulation.remove(key, req.query[key]);
 	
 	res.type('text/html'); 
 	res.status(200);			
@@ -65,7 +62,7 @@ app.get('/add', (req, res) => {
 	 * hasInsertedRecord variable is a flag from manipulation module
 	 * indicating if a record has been added. 
 	 */
-	var hasInsertedRecord = manipulation.add(req.query);
+	let hasInsertedRecord = manipulation.add(req.query);
 	
 	res.type('text/plain'); 
 	res.status(200);
@@ -84,7 +81,7 @@ app.get('/detail', (req, res) => {
 	
 	res.type('text/html'); 
 	res.status(200);
-			    
+
 	res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord, delURL : delURL});
 });
 

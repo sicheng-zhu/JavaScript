@@ -1,16 +1,15 @@
-var employee = [{employeeid : 1, name : "Nancy Davolio", degree : "Bachelor"},
-			    {employeeid : 2, name : "Andrew Fuller", degree : "Doctor"},
-			    {employeeid : 3, name : "Janet Leverling", degree : "Bachelor"},
-			    {employeeid : 4, name : "Margaret Peacock", degree : "Bachelor"},
-			    {employeeid : 5, name : "Steven Buchanan", degree : "Bachelor"}];
+let employee = [{employeeid : 1, name : "Nancy Davolio", degree : "Bachelor"},
+				{employeeid : 2, name : "Andrew Fuller", degree : "Doctor"},
+				{employeeid : 3, name : "Janet Leverling", degree : "Bachelor"},
+				{employeeid : 4, name : "Margaret Peacock", degree : "Bachelor"},
+				{employeeid : 5, name : "Steven Buchanan", degree : "Bachelor"}];
 
 function add(parameters) {
-	var newEmpID;
-	var newEmp;
+	let newEmp;
 	
 	if (parameters.employeeid !== undefined) {
-		for (var i = 0; i < employee.length; i++) {
-		    if (employee[i].employeeid.toString() === parameters.employeeid) {					
+		for (let i = 0; i < employee.length; i++) {
+			if (employee[i].employeeid.toString() === parameters.employeeid) {					
 				return false;
 			}
 		}
@@ -20,7 +19,7 @@ function add(parameters) {
 		newEmp = {employeeid : employee[employee.length - 1].employeeid + 1, name : parameters.name, degree : parameters.degree};
 	}
 		
-	for (var prop in newEmp) {
+	for (let prop in newEmp) {
         if (newEmp[prop] === undefined) {
 			newEmp[prop] = "";
 		}
@@ -35,31 +34,31 @@ function getAll() {
 }
 
 function get(key, value) {
-	var isValidKeyName = false;
+	let isValidKeyName = false;
 
-	for (var keyWord in employee[0]) {		
+	for (let keyWord in employee[0]) {		
 		if (key === keyWord) {
 			isValidKeyName = true;
 		}
 	}
 
-	if (!isValidKeyName) {					    
+	if (!isValidKeyName) {	
 		return undefined;
 	}
 	
-	for (var i = 0; i < employee.length; i++) {
+	for (let i = 0; i < employee.length; i++) {
 		if (employee[i][key].toString() === value) {	
 			return employee[i];
 		}
 	}	
-	
+
 	return undefined;
 }
 
 function remove(key, value) {
-	var isValidKeyName = false;
+	let isValidKeyName = false;
 
-	for (var keyWord in employee[0]) {		
+	for (let keyWord in employee[0]) {		
 		if (key === keyWord) {
 			isValidKeyName = true;
 		}
@@ -69,7 +68,7 @@ function remove(key, value) {
 		return false;
 	}
 	
-	for (var i = 0; i < employee.length; i++) {
+	for (let i = 0; i < employee.length; i++) {
 		if (employee[i][key].toString() === value) {
 			employee.splice(i, 1);
 			return true;
