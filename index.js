@@ -1,6 +1,6 @@
-'use strict'
 const manipulation = require("./manipulation");
 const express = require("express");
+const dboperation = require("./dboperation");
 const app = express();
 let key;
 let handlebars =  require("express-handlebars");
@@ -12,15 +12,22 @@ app.use(express.static(__dirname)); // set location for static files
 app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
 
 app.get('/', (req, res) => {
-	let empList = manipulation.getAll();
 	res.type('text/html');
-	res.status(200);	
+	res.status(200);
 	
-	for (let i = 0; i < empList.length; i++) {
-		empList[i].viewURL = "http://localhost:3000/detail?employeeid=" + empList[i].employeeid;
-	}
-	
-	res.render('home', {empList: empList});
+	dboperation.getAll(function(empRecords){
+		if (empRecords.length == 0) {
+			res.send("Empty");
+		} else {
+			let empList = empRecords;
+			
+			for (let i = 0; i < empList.length; i++) {
+				empList[i].viewURL = "http://localhost:3000/detail?employeeid=" + empList[i].employeeid;
+			}
+			
+            res.render('home', {empList: empList});			
+		}				 
+	});
 });
 
 app.get('/about', (req, res) => {
@@ -32,57 +39,72 @@ app.get('/about', (req, res) => {
 app.get('/getall', (req, res) => {
 	res.type('text/plain');
 	res.status(200);
-	res.send(JSON.stringify(manipulation.getAll())); 
+	
+	dboperation.getAll(function(empRecords){
+		if (empRecords.length == 0) {
+			res.send("Empty");
+		} else {
+            res.send(JSON.stringify(empRecords));			
+		}				 
+	});
 });
 
 app.get('/get', (req, res) => {	
 	key = Object.keys(req.query)[0];	
-	let empRecord = manipulation.get(key, req.query[key]);
-	
+
 	res.type('text/html'); 
 	res.status(200);
 	
 	// need to update from viewURL to delURL after localhost:3000/ is called.
-	res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord });
+	dboperation.get(parseInt(req.query[key]), function(empRecord){
+		res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord});			 
+	});		
 });
 
 app.get('/delete', (req, res) => {	
-	key = Object.keys(req.query)[0];	
-	let isRecordRemoved = manipulation.remove(key, req.query[key]);
-	
-	res.type('text/html'); 
-	res.status(200);			
-	
-	res.render('delete', {employeeid: req.query.employeeid, isRecordRemoved: isRecordRemoved, recordRemain : manipulation.getRecordCount()});
+	key = Object.keys(req.query)[0];
+
+	res.type('text/html');
+	res.status(200);
+
+	dboperation.remove(parseInt(req.query[key]), function(empRecord){
+		if (empRecord.n !== 0) {
+			dboperation.getRecordCount(function(count){
+				res.render('delete', {employeeid: req.query.employeeid, isRecordRemoved: true, recordRemain : count});
+			});
+		} else {
+			dboperation.getRecordCount(function(count){
+				res.render('delete', {employeeid: req.query.employeeid, isRecordRemoved: false, recordRemain : count});
+			});
+		}
+	});
 });
 
 app.get('/add', (req, res) => {	
 	key = Object.keys(req.query)[0];
-	/* 
-	 * hasInsertedRecord variable is a flag from manipulation module
-	 * indicating if a record has been added. 
-	 */
-	let hasInsertedRecord = manipulation.add(req.query);
-	
+
 	res.type('text/plain'); 
 	res.status(200);
-	
-	if (hasInsertedRecord === false) {		
-		res.send(req.query[key] + " not added");
-	} else {
-		res.send(req.query[key] + " added");	
-	}								 
+
+	dboperation.addOrUpdate(req.query, function(empID){			    		
+	    if (empID === undefined) {		
+		    res.send(empID + " not added or updated");
+	    } else {
+		    res.send(empID + " added or updated");	
+	    }
+	});										 
 });
 
-app.get('/detail', (req, res) => {	
+app.get('/detail', (req, res) => {						
 	key = Object.keys(req.query)[0];	
-	let empRecord = manipulation.get(key, req.query[key]);
-	let delURL = "http://localhost:3000/delete?employeeid=" + req.query[key];
-	
+
 	res.type('text/html'); 
 	res.status(200);
-
-	res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord, delURL : delURL});
+	
+	dboperation.get(parseInt(req.query[key]), function(empRecord){		
+	    let delURL = "http://localhost:3000/delete?employeeid=" + req.query[key];		
+		res.render('details', {employeeid: req.query.employeeid, empRecord: empRecord, delURL : delURL});
+	});		
 });
 
 // define 404 handler

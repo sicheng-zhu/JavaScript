@@ -1,8 +1,8 @@
-let employee = [{employeeid : 1, name : "Nancy Davolio", degree : "Bachelor"},
-				{employeeid : 2, name : "Andrew Fuller", degree : "Doctor"},
-				{employeeid : 3, name : "Janet Leverling", degree : "Bachelor"},
-				{employeeid : 4, name : "Margaret Peacock", degree : "Bachelor"},
-				{employeeid : 5, name : "Steven Buchanan", degree : "Bachelor"}];
+let employee = [{"employeeid" : 1, "name" : "Nancy Davolio", "degree" : "Bachelor"},
+				{"employeeid" : 2, "name" : "Andrew Fuller", "degree" : "Doctor"},
+				{"employeeid" : 3, "name" : "Janet Leverling", "degree" : "Bachelor"},
+				{"employeeid" : 4, "name" : "Margaret Peacock", "degree" : "Bachelor"},
+				{"employeeid" : 5, "name" : "Steven Buchanan", "degree" : "Bachelor"}];
 
 function add(parameters) {
 	let newEmp;
@@ -30,7 +30,7 @@ function add(parameters) {
 }
 
 function getAll() {
-	return employee;
+	return employee;	
 }
 
 function get(key, value) {
