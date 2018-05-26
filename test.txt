@@ -1,7 +1,0 @@
-http://localhost:3000/get?employeeid=1
-http://localhost:3000/delete?employeeid=1
-http://localhost:3000/getall
-
-http://localhost:3000/add?employeeid=1&name=Steven%20Buchanan&degree=Bachelor
-
-file:///D:/Seattle Central/ITC230/public/home.html		      

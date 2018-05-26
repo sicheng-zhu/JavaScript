@@ -7,18 +7,20 @@ function addOrUpdate(parameters, addOrUpdateCallBack) {
 	// If employeeid is not empty.
 	if (parameters.employeeid !== undefined) {				
 		// Search by employeeid, and then decide if add or update a record.
-		employee.findOne({"employeeid" : parameters.employeeid}, function (err, item) {
+		employee.findOne({"employeeid" : parameters.employeeid}, function (err, item, next) {
 		    if (err) {
+				addOrUpdateCallBack("error");
 			    return next(err);
 		    } 
 
 			// Item found, update this record
 		    if (item !== null) { 				
-			    employee.updateOne(parameters, function(err, res) {        
+			    employee.findOneAndUpdate({"employeeid" : parameters.employeeid}, parameters, function(err, res, next) {        
 					if (err) {
+						addOrUpdateCallBack("error");
 			            return next(err);												
 		            } 
-					
+
 					addOrUpdateCallBack(parameters.employeeid);
 				});                    
 		    } else { // Item not found, add this record									
@@ -30,7 +32,7 @@ function addOrUpdate(parameters, addOrUpdateCallBack) {
 		            }
 	            }
 				
-				employee.create(newEmp, function(err, res) {        
+				employee.create(newEmp, function(err, res, next) {        
 				    if (err) {
 					    addOrUpdateCallBack(undefined);
 			            return next(err);
@@ -41,8 +43,9 @@ function addOrUpdate(parameters, addOrUpdateCallBack) {
 		    }
 	    });										
 	} else { // If employeeid is empty.		
-		employee.find({}).sort({"employeeid": 'descending'}).limit(1).exec(function(err, item) { 
+		employee.find({}).sort({"employeeid": 'descending'}).limit(1).exec(function(err, item, next) { 
 			if (err) {
+				addOrUpdateCallBack("error");
 				return next(err);
 			} 
 					
@@ -54,7 +57,7 @@ function addOrUpdate(parameters, addOrUpdateCallBack) {
 		        }
 	        }
 			
-			employee.create(newEmp, function(err, res) {        				
+			employee.create(newEmp, function(err, res, next) {        				
 				if (err) {
 					addOrUpdateCallBack(undefined);
 			        return next(err);
@@ -68,8 +71,9 @@ function addOrUpdate(parameters, addOrUpdateCallBack) {
 
 // return all records
 function getAll(getAllCallBack){
-	employee.find({}, function(err, items) {
+	employee.find({}, function(err, items, next) {
         if (err) {
+			getAllCallBack("error");
             return next(err);
         } 
 
@@ -79,8 +83,9 @@ function getAll(getAllCallBack){
 
 // return a single record
 function get(value, getCallBack) {
-	employee.findOne({"employeeid" : value}, function (err, items) {
+	employee.findOne({"employeeid" : value}, function (err, items, next) {
 		if (err) {
+			getCallBack("error");
 			return next(err);
 		} 
 		
@@ -90,8 +95,9 @@ function get(value, getCallBack) {
 
 // delete a single record
 function remove(value, delateCallBack) {
-	employee.deleteOne({"employeeid" : value}, function (err, items) {
+	employee.deleteOne({"employeeid" : value}, function (err, items, next) {
 		if (err) {
+			delateCallBack("error");
 			return next(err);
 		} 
 
@@ -101,7 +107,7 @@ function remove(value, delateCallBack) {
 
 // get counts of documents in db
 function getRecordCount(getRecordCallBack) {
-	employee.count({}, function (err, count) {
+	employee.count({}, function (err, count, next) {
 		if (err) {
 			return next(err);
 		} 
