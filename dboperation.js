@@ -3,7 +3,7 @@ var employee = require("./model/employee");
 // add or update a single record
 function addOrUpdate(parameters, addOrUpdateCallBack) {
 	let newEmp;
-	
+
 	// If employeeid is not empty.
 	if (parameters.employeeid !== undefined) {				
 		// Search by employeeid, and then decide if add or update a record.

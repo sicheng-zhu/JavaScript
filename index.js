@@ -4,6 +4,7 @@ const dboperation = require("./dboperation");
 const app = express();
 let key;
 let handlebars =  require("express-handlebars");
+let bodyParser = require("body-parser");
 
 app.engine(".html", handlebars({extname: '.html'}));
 app.set('port', process.env.PORT || 3000);
@@ -11,9 +12,11 @@ app.set("view engine", ".html");
 app.use(express.static(__dirname)); // set location for static files
 app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
 app.use('/', require('cors')()); // set Access-Control-Allow-Origin header for api route
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-	dboperation.getAll(function(empRecords){
+app.get('/', (req, res) => {			
+	dboperation.getAll(function(empRecords) {					
 		if (empRecords.length == 0) {
 			res.type('text/html');
 			res.status(200);
@@ -30,7 +33,7 @@ app.get('/', (req, res) => {
 			
 			res.type('text/html');
 	        res.status(200);
-            res.render('home', {empList: empList});			
+            res.render('home', {empList:  JSON.stringify(empList)});		
 		}				 
 	});
 });
@@ -98,15 +101,15 @@ app.get('/get', (req, res) => {
 });
 
 // delete
-app.get('/delete', (req, res) => {	
-	key = Object.keys(req.query)[0];	
+app.get('/delete/:id', (req, res) => {	
+	key = req.params.id;	
 
-	dboperation.remove(parseInt(req.query[key]), function(empRecord){
+	dboperation.remove(parseInt(key), function(empRecord){
 		if (empRecord.n !== 0) {
 			res.type('text/html');
 	        res.status(200);
 			dboperation.getRecordCount(function(count){
-				res.render('delete', {employeeid: req.query.employeeid, isRecordRemoved: true, recordRemain : count});
+                res.json({"deleted": count});
 			});
 		} else if (empRecord === "error") {
 			res.status(500).send("Database error. Please try later.");
@@ -114,7 +117,7 @@ app.get('/delete', (req, res) => {
 			dboperation.getRecordCount(function(count){
 				res.type('text/html');
 	            res.status(200);
-				res.render('delete', {employeeid: req.query.employeeid, isRecordRemoved: false, recordRemain : count});
+				res.json({"deleted": count});
 			});
 		}
 	});
