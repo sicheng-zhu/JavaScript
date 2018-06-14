@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width">
     <title>React App Demo</title>
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
  
     <style type="text/css">
       .flex-container {
@@ -30,7 +30,7 @@
       }
     </style>
   </head>
-
+  
 <body>
 
   <div id="root"></div>
@@ -88,6 +88,7 @@
     onSave() {
       let newItem = this.state.curItem;
 	  
+	  // If no employee record is being selected, stop here.
       if (!newItem.name) {
         return;
       }

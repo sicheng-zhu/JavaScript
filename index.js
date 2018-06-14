@@ -19,14 +19,14 @@ app.get('/', (req, res) => {
 	dboperation.getAll(function(empRecords) {					
 		if (empRecords.length == 0) {
 			res.type('text/html');
-			res.status(200);
-			
+			res.status(200);			
 			res.send("Empty");
 		} else if (empRecords === "error") {
 		    res.status(500).send("Database error. Please try later.");
 		} else {
 			let empList = empRecords;
 			
+			// Add URL to each employee
 			for (let i = 0; i < empList.length; i++) {				
 				empList[i].viewURL = "http://localhost:3000/detail?employeeid=" + empList[i].employeeid;
 			}
@@ -44,11 +44,12 @@ app.get('/about', (req, res) => {
 	res.sendFile(__dirname + '/package.json');
 });
 
+// Detail page for each employee
 app.get('/detail', (req, res) => {						
 	key = Object.keys(req.query)[0];		
 	
 	dboperation.get(parseInt(req.query[key]), function(empRecord){
-		if (empRecord === "error") {
+		if (empRecord === "error") { // If anything wrong, receive from dboperation.js
 			res.status(500).send("Database error. Please try later.");
 		} else {
 			res.type('text/html'); 
@@ -59,13 +60,12 @@ app.get('/detail', (req, res) => {
 	});		
 });
 
-// getall
+// Get all records from database
 app.get('/getall', (req, res) => {	
 	dboperation.getAll(function(empRecords){
 		if (empRecords.length == 0) {
 			res.type('text/plain');
-	        res.status(200);
-			
+	        res.status(200);			
 			res.send("Empty");
 		} else if (empRecords === "error") {
 			res.status(500).send("Database error. Please try later.");
@@ -84,11 +84,10 @@ app.get('/getall', (req, res) => {
 	});
 });
 
-// get
+// Get a single record from database
 app.get('/get', (req, res) => {	
 	key = Object.keys(req.query)[0];		
-	
-	// need to update from viewURL to delURL after localhost:3000/ is called.
+		
 	dboperation.get(parseInt(req.query[key]), function(empRecord){
 		if (empRecord === "error") {
 			res.status(500).send("Database error. Please try later.");
@@ -100,7 +99,7 @@ app.get('/get', (req, res) => {
 	});		
 });
 
-// delete
+// Delete one record by employee id
 app.get('/delete/:id', (req, res) => {	
 	key = req.params.id;	
 
@@ -108,6 +107,7 @@ app.get('/delete/:id', (req, res) => {
 		if (empRecord.n !== 0) {
 			res.type('text/html');
 	        res.status(200);
+			// Get remaining record counts after deletion
 			dboperation.getRecordCount(function(count){
                 res.json({"deleted": count});
 			});
@@ -123,7 +123,7 @@ app.get('/delete/:id', (req, res) => {
 	});
 });
 
-// The following two methods are route for REST add
+// The following two methods are used for REST add
 app.get('/input', (req, res) => {
 	res.type('text/html');
 	res.status(200);
